@@ -1,0 +1,23 @@
+import cosas.*
+import camion.*
+import almacen.*
+
+describe "Almacen test" {
+  test "No puede almacenar porque el limite de bultos es 2" {
+    camion.cargar(knightRider)
+
+    almacen.maximoBultos(2)
+
+    assert.notThat(almacen.puedeAlmacenar(camion))
+  }
+
+  test "puede Almacenar porque el limite de bultos es 10 y lleva un knightrider, bumbleblee y arena"{
+    camion.cargar(bumbleblee)
+    camion.cargar(knightRider)
+    camion.cargar(arenaGranel)
+
+    almacen.maximoBultos(10)
+
+    assert.that(almacen.puedeAlmacenar(camion))
+  }
+}

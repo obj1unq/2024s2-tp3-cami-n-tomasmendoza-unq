@@ -1,0 +1,30 @@
+import cosas.*
+import camion.*
+import rutas.*
+
+describe "ruta test" {
+  test "No puede viajar por ruta 9, porque lleva residuos radiactivos y supera el nivel de peligrosidad" {
+    camion.cargar(residuosRadioactivos)
+
+    assert.notThat(ruta9.puedeCircular(camion))
+  }
+
+  test "puede viajar por ruta9, porque lleva a arena" {
+    camion.cargar(arenaGranel)
+
+    assert.that(ruta9.puedeCircular(camion))
+  }
+
+  test "no puede viajar por camino vecinales, porque lleva a bumblebee y el limite es de 200kg"{
+    camion.cargar(bumbleblee)
+    caminosVecinales.pesoMaximoDeCirculacion(200)
+
+    assert.notThat(caminosVecinales.puedeCircular(camion))
+  }
+
+  test "puede viajar por camino vecinales, porque esta vacio y el limite es 1500 kg"{
+    caminosVecinales.pesoMaximoDeCirculacion(1500)
+
+    assert.that(caminosVecinales.puedeCircular(camion))
+  }
+}

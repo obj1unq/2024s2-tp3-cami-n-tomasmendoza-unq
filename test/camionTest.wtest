@@ -1,0 +1,147 @@
+import camion.*
+import cosas.*
+
+describe "camion Test" {
+
+    method initialize() {
+        camion.cargar(knightRider)
+    }
+
+    test "agrega a knight, pregunta si esta, lo remueve y pregunta si esta"{
+        assert.that(camion.hayCosa(knightRider))
+        
+        camion.cargar(residuosRadioactivos)
+        camion.cargar(paqueteDeLadrillos)
+        camion.descargar(knightRider)
+        
+        assert.notThat(camion.hayCosa(knightRider))
+    }  
+    test "todo su peso es par" {
+      assert.that(camion.todoPesoPar())
+
+      camion.cargar(residuosRadioactivos)
+
+      assert.notThat(camion.todoPesoPar())
+
+    }
+
+    test "knight ridder esta en la carga"{
+      assert.that(camion.hayAlgunoQuePesa(500))
+
+      camion.descargar(knightRider)
+
+      assert.notThat(camion.hayAlgunoQuePesa(500))
+    }
+
+    test "elDeNivel()" {
+      camion.cargar(paqueteDeLadrillos)
+      camion.cargar(residuosRadioactivos)
+
+      assert.equals(knightRider, camion.elDeNivel(10))
+
+      assert.equals(paqueteDeLadrillos, camion.elDeNivel(2))
+
+      assert.throwsException({ camion.elDeNivel(1000000000000) })
+    }
+
+    test "pesoTotal()"{
+        assert.equals(1500, camion.pesoTotal())
+
+        camion.descargar(knightRider)  
+    
+        assert.equals(1000, camion.pesoTotal())
+    }
+
+    test "excedidoDePeso()"{
+        assert.notThat(camion.excedidoDePeso())
+
+        residuosRadioactivos.agregarResiduos(20000)
+        camion.cargar(residuosRadioactivos)
+
+        assert.that(camion.excedidoDePeso())
+    }
+
+    test "objetosQueSuperanPeligrosidad(nivel)"{
+        camion.cargar(residuosRadioactivos)
+
+        assert.equals(#{knightRider,residuosRadioactivos}, camion.objetosQueSuperanPeligrosidad(1))
+
+        assert.equals(#{residuosRadioactivos}, camion.objetosQueSuperanPeligrosidad(20))
+    }
+
+    test "objetosMasPeligrososQue(cosa)"{
+        camion.cargar(residuosRadioactivos)
+
+        camion.cargar(paqueteDeLadrillos)
+
+        assert.equals(#{knightRider,residuosRadioactivos,paqueteDeLadrillos}, camion.objetosMasPeligrososQue(arenaGranel))
+    
+        assert.equals(#{residuosRadioactivos}, camion.objetosMasPeligrososQue(bumbleblee))
+    }
+
+    test "puedeCircularEnRuta(nivelMax)" {
+        assert.that(camion.puedeCircularEnRuta(100))
+
+        camion.cargar(residuosRadioactivos)
+
+        assert.notThat(camion.puedeCircularEnRuta(10))
+
+        camion.descargar(residuosRadioactivos)
+
+        camion.cargar(bateriaAntiarea)
+
+        camion.cargar(bumbleblee)
+
+        arenaGranel.agregarArena(20000)
+        camion.cargar(arenaGranel)
+            
+        assert.notThat(camion.puedeCircularEnRuta(1000))
+
+
+    }
+
+    test "tieneAlgoQuePesaEntre(100,200)" {
+        assert.that(camion.tieneAlgoQuePesaEntre(1,600))
+        assert.notThat(camion.tieneAlgoQuePesaEntre(900,1000))
+    
+    }
+
+    test "cosaMasPesada()"{
+        assert.equals(knightRider, camion.cosaMasPesada())
+        camion.descargar(knightRider)
+
+        assert.throwsException({ camion.cosaMasPesada() })
+    }
+
+    test "pesos()"{
+        assert.equals(500, camion.pesos())
+
+        camion.cargar(contenedorPortuario)
+
+        assert.equals(600, camion.pesos())
+    }
+
+    test "totalBultos()"{
+        assert.equals(1, camion.totalBultos())
+
+        camion.cargar(arenaGranel)
+
+        camion.cargar(embalajeDeSeguridad)
+
+        assert.equals(4, camion.totalBultos())
+
+        camion.cargar(paqueteDeLadrillos)
+
+        camion.cargar(bateriaAntiarea)
+
+        assert.equals(7, camion.totalBultos())
+
+        contenedorPortuario.agregarCosa(knightRider)
+        contenedorPortuario.agregarCosa(paqueteDeLadrillos)
+
+        camion.cargar(contenedorPortuario)
+
+        assert.equals(10, camion.totalBultos())
+    }
+
+}

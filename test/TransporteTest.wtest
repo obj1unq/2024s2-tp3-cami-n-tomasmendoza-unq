@@ -1,0 +1,59 @@
+import camion.*
+import cosas.*
+import almacen.*
+import rutas.*
+
+describe "Transporte test" {
+    test "Exitoso: viaje por ruta 9, con knigth Rider y Bumblebee cargados en el camion. Almacen con maximo bultos 10" {
+        camion.cargar(knightRider)
+        
+        almacen.maximoBultos(10)
+        
+        camion.transportar(almacen, ruta9)
+
+        assert.that(camion.camionVacio())
+
+        assert.equals(#{arenaGranel,knightRider}, almacen.deposito())
+
+    }
+
+    test "Exception: viaje por ruta 9, con knigth Rider y Bumblebee cargados en el camion. Almacen con maximo bultos 2"{
+        camion.cargar(knightRider)
+        camion.cargar(bumbleblee)
+        
+        almacen.maximoBultos(2)
+        
+        assert.throwsException({ camion.verificarSiPuedeViajar(almacen,ruta9) })
+
+        assert.notThat(camion.camionVacio())
+
+        assert.equals(#{arenaGranel}, almacen.deposito())
+    }
+
+    test "Exitoso: viaje por caminos vecinales, con knight rider en el camion. Almacen con maximo bultos 3 y peso maximo 10000kg"{
+        camion.cargar(knightRider)
+
+        almacen.maximoBultos(3)
+
+        caminosVecinales.pesoMaximoDeCirculacion(10000)
+
+        camion.transportar(almacen, caminosVecinales)
+
+        assert.that(camion.camionVacio())
+
+        assert.equals(#{arenaGranel,knightRider}, almacen.deposito())
+    }
+
+    test "Exception: viaje por caminos vecinales, con knight rider,bumblebee en el camion. Almacen con maximo bultos 1 y peso maximo 10kg" {
+        camion.cargar(knightRider)
+        camion.cargar(bumbleblee)
+
+        almacen.maximoBultos(1)
+
+        caminosVecinales.pesoMaximoDeCirculacion(10)
+
+        assert.throwsException({ camion.transportar(almacen, caminosVecinales) })
+
+        
+    }
+}
